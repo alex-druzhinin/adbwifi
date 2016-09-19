@@ -7,8 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 import java.util.List;
@@ -46,33 +44,33 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (!Shell.SU.available()) {
                     Log.d(TAG, "SU not available");
-                    mStatus.setText("SU not available");
-                    Snackbar.make(view, "SU not available", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    mStatus.setText(R.string.su_not_available);
+                    Snackbar.make(view, getResources().getText(R.string.su_not_available), Snackbar.LENGTH_LONG)
+                            .show();
                     return;
                 }
 
                 Shell.SU.run(new String[]{
                         "setprop service.adb.tcp.port 5555"
                 });
-                sleep();
+                sleep(1);
 
                 Shell.SU.run(new String[]{
                         "stop adbd"
                 });
-                sleep();
+                sleep(1);
 
                 Shell.SU.run(new String[]{
                         "start adbd"
                 });
-                sleep();
+                sleep(1);
 
                 List<String> suResult = Shell.SU.run(new String[]{
                         "id",
                         "ip -f inet addr show"
                 });
 
-                mStatus.setText("WiFi enabled on port 5555");
+                mStatus.setText(R.string.wifi_enabled);
 
                 StringBuilder connectStringBuilder = new StringBuilder();
                 if (suResult != null) {
@@ -104,33 +102,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void sleep() {
+    private void sleep(int seconds) {
         try {
-            Thread.sleep(1 * 1000);
+            Thread.sleep(seconds * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 }
